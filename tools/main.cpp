@@ -2,19 +2,22 @@
 
 #include "gl.hpp"
 
-void glfw_error_callback(int error, const char *description) {
-  LCERROR("GLFW", "[{}] {}", error, description);
-}
+#include <glm/glm.hpp>
+using namespace glm;
 
 int main(int argc, char const *argv[]) {
   orbis::logger::initalize_core_logger();
+  orbis::logger::initalize_logger("GL");
   orbis::logger::initalize_logger("GLFW");
-  if (!glfwInit()) {
-    LCERROR("GLFW", "GLFW initalization failed");
-  } else {
-    LCINFO("GLFW", "Initalized GLFW");
+  if (!gl::init())
+    return -1;
+  gl::clearColor({1.0, 0.0, 1.0});
+  while (!gl::shouldClose()) {
+    gl::frame();
+    if (glfwGetKey(gl::window, GLFW_KEY_ESCAPE) == GLFW_PRESS) {
+      gl::setShouldClose(true);
+    }
   }
-  glfwSetErrorCallback(glfw_error_callback);
-  glfwTerminate();
+  gl::terminate();
   return 0;
 }
