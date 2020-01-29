@@ -1,4 +1,4 @@
-#include "log.hpp"
+#include "orbis/log.hpp"
 
 #include <iostream>
 #include <memory>
@@ -10,6 +10,7 @@
 #include <spdlog/sinks/stdout_color_sinks.h>
 #include <spdlog/spdlog.h>
 
+static std::shared_ptr<spdlog::sinks::basic_file_sink_mt> core_file_sink;
 static std::shared_ptr<spdlog::logger> core_logger;
 static std::unordered_map<std::string, std::shared_ptr<spdlog::logger>>
     client_logger;
@@ -17,13 +18,15 @@ static std::unordered_map<std::string, std::shared_ptr<spdlog::logger>>
 bool orbis::logger::initalize_core_logger(const LogLevel &console_level,
                                           const LogLevel &file_level) {
   try {
+    core_file_sink =
+        std::make_shared<spdlog::sinks::basic_file_sink_mt>("orbis.log", true);
+    core_file_sink->set_level(
+        static_cast<spdlog::level::level_enum>(file_level));
     std::vector<spdlog::sink_ptr> sinks;
     sinks.push_back(std::make_shared<spdlog::sinks::stdout_color_sink_mt>());
     sinks.back()->set_level(
         static_cast<spdlog::level::level_enum>(console_level));
-    sinks.push_back(
-        std::make_shared<spdlog::sinks::basic_file_sink_mt>("orbis.log", true));
-    sinks.back()->set_level(static_cast<spdlog::level::level_enum>(file_level));
+    sinks.push_back(core_file_sink);
     core_logger =
         std::make_shared<spdlog::logger>("orbis", begin(sinks), end(sinks));
     core_logger->set_level(static_cast<spdlog::level::level_enum>(
@@ -48,6 +51,7 @@ bool orbis::logger::initalize_logger(const std::string &name,
     sinks.push_back(std::make_shared<spdlog::sinks::basic_file_sink_mt>(
         name + ".log", true));
     sinks.back()->set_level(static_cast<spdlog::level::level_enum>(file_level));
+    sinks.push_back(core_file_sink);
     client_logger[name] =
         std::make_shared<spdlog::logger>(name, begin(sinks), end(sinks));
     client_logger[name]->set_level(static_cast<spdlog::level::level_enum>(

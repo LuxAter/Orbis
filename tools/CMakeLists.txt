@@ -5,7 +5,7 @@ set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${ORBIS_BINARY_DIR})
 # ##############################################################################
 # SOURCE FILES
 # ##############################################################################
-set(SOURCES main.cpp glad.c)
+set(SOURCES main.cpp gl.cpp glad.c)
 
 # ##############################################################################
 # TARGET
@@ -13,7 +13,7 @@ set(SOURCES main.cpp glad.c)
 add_executable(orbis ${SOURCES})
 target_include_directories(orbis PUBLIC ${ORBIS_SOURCE_DIR}/tools)
 
-set_target_properties(orbis PROPERTIES CXX_STANDARD 11 CXX_STANDARD_REQUIRED
-                                                         YES CXX_EXTENSIONS OFF)
+set_target_properties(
+  orbis PROPERTIES CXX_STANDARD 11 CXX_STANDARD_REQUIRED YES CXX_EXTENSIONS OFF)
 target_link_libraries(orbis orbis::orbis glfw)
 install(TARGETS orbis RUNTIME DESTINATION bin)

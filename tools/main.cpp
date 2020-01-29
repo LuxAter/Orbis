@@ -1,20 +1,30 @@
-#include "log.hpp"
 
 #include "gl.hpp"
 
-void glfw_error_callback(int error, const char *description) {
-  LCERROR("GLFW", "[{}] {}", error, description);
-}
+#include <orbis/image.hpp>
+#include <orbis/log.hpp>
+
+#include <glm/glm.hpp>
+using namespace glm;
 
 int main(int argc, char const *argv[]) {
   orbis::logger::initalize_core_logger();
-  orbis::logger::initalize_logger("GLFW");
-  if (!glfwInit()) {
-    LCERROR("GLFW", "GLFW initalization failed");
-  } else {
-    LCINFO("GLFW", "Initalized GLFW");
+  if (!gl::init())
+    return -1;
+  gl::clearColor({1.0, 0.0, 1.0});
+  orbis::Image img(500, 500);
+  for (auto y = 0; y < img.height; ++y) {
+    for (auto x = 0; x < img.width; ++x) {
+      img(y, x) = glm::vec3(x / (float)img.width, y / (float)img.height, 0.0f);
+    }
   }
-  glfwSetErrorCallback(glfw_error_callback);
-  glfwTerminate();
+  while (!gl::shouldClose()) {
+    gl::frame();
+    gl::drawPixels(img);
+    if (glfwGetKey(gl::window, GLFW_KEY_ESCAPE) == GLFW_PRESS) {
+      gl::setShouldClose(true);
+    }
+  }
+  gl::terminate();
   return 0;
 }
