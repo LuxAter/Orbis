@@ -1,0 +1,16 @@
+#ifndef ORBIS_VERSION_HPP_
+#define ORBIS_VERSION_HPP_
+
+#define ORBIS_VERSION_MAJOR @PROJECT_VERSION_MAJOR@
+#define ORBIS_VERSION_MINOR @PROJECT_VERSION_MINOR@
+#define ORBIS_VERSION_PATCH @PROJECT_VERSION_PATCH@
+
+namespace orbis {
+inline void get_version(unsigned &major, unsigned &minor, unsigned &patch) {
+  major = ORBIS_VERSION_MAJOR;
+  minor = ORBIS_VERSION_MINOR;
+  patch = ORBIS_VERSION_PATCH;
+}
+} // namespace orbis
+
+#endif // ORBIS_VERSION_HPP_

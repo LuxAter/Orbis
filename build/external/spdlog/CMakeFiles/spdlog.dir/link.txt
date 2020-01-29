@@ -1,0 +1,1 @@
+/sbin/c++ -fPIC  -Wall -g -D__DEBUG__  -shared -Wl,-soname,libspdlogd.so.1 -o libspdlogd.so.1.5.0 CMakeFiles/spdlog.dir/src/spdlog.cpp.o CMakeFiles/spdlog.dir/src/stdout_sinks.cpp.o CMakeFiles/spdlog.dir/src/color_sinks.cpp.o CMakeFiles/spdlog.dir/src/file_sinks.cpp.o CMakeFiles/spdlog.dir/src/async.cpp.o CMakeFiles/spdlog.dir/src/fmt.cpp.o  -lpthread 
