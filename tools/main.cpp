@@ -7,6 +7,8 @@
 #include <glm/glm.hpp>
 using namespace glm;
 
+#include "gui.hpp"
+
 int main(int argc, char const *argv[]) {
   orbis::logger::initalize_core_logger();
   if (!gl::init())
@@ -18,13 +20,16 @@ int main(int argc, char const *argv[]) {
       img(y, x) = glm::vec3(x / (float)img.width, y / (float)img.height, 0.0f);
     }
   }
+  gui::init();
   while (!gl::shouldClose()) {
-    gl::frame();
     gl::drawPixels(img);
     if (glfwGetKey(gl::window, GLFW_KEY_ESCAPE) == GLFW_PRESS) {
       gl::setShouldClose(true);
     }
+    gui::frame();
+    gl::frame();
   }
+  gui::terminate();
   gl::terminate();
   return 0;
 }

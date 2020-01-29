@@ -30,6 +30,8 @@ bool gl::init() {
     LCINFO("OpenGL", "Initalized GLFW");
   }
   glfwSetErrorCallback(glfwErrorCallback);
+  glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
+  glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 1);
   window = glfwCreateWindow(500, 500, "Orbis", NULL, NULL);
   if (!window) {
     LCERROR("OpenGL", "Failed to construct GLFW window");

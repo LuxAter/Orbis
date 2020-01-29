@@ -5,13 +5,27 @@ set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${ORBIS_BINARY_DIR})
 # ##############################################################################
 # SOURCE FILES
 # ##############################################################################
-set(SOURCES main.cpp gl.cpp glad.c)
+set(SOURCES
+    main.cpp
+    gl.cpp
+    gui.cpp
+    glad/glad.c
+    ${ORBIS_SOURCE_DIR}/external/imgui/imgui_demo.cpp
+    ${ORBIS_SOURCE_DIR}/external/imgui/imgui_widgets.cpp
+    ${ORBIS_SOURCE_DIR}/external/imgui/imgui_draw.cpp
+    ${ORBIS_SOURCE_DIR}/external/imgui/imgui.cpp
+    ${ORBIS_SOURCE_DIR}/external/imgui/examples/imgui_impl_glfw.cpp
+    ${ORBIS_SOURCE_DIR}/external/imgui/examples/imgui_impl_opengl3.cpp)
 
 # ##############################################################################
 # TARGET
 # ##############################################################################
 add_executable(orbis ${SOURCES})
 target_include_directories(orbis PUBLIC ${ORBIS_SOURCE_DIR}/tools)
+target_include_directories(orbis PUBLIC ${ORBIS_SOURCE_DIR}/external/imgui)
+target_include_directories(orbis
+                           PUBLIC ${ORBIS_SOURCE_DIR}/external/imgui/examples)
+target_compile_definitions(orbis PUBLIC -DIMGUI_IMPL_OPENGL_LOADER_GLAD)
 
 set_target_properties(
   orbis PROPERTIES CXX_STANDARD 11 CXX_STANDARD_REQUIRED YES CXX_EXTENSIONS OFF)
