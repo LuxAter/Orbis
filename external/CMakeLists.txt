@@ -22,6 +22,14 @@ endmacro()
 # ##############################################################################
 # DEPENDENCIES
 # ##############################################################################
+set(BUILD_STATIC_LIBS (NOT ${ORBIS_SHARED_LIB}))
+set(BUILD_SHARED_LIBS ${ORBIS_SHARED_LIB})
 option(SPDLOG_BUILD_SHARED "" ${ORBIS_SHARED_LIB})
+option(GLFW_BUILD_EXAMPLES "" OFF)
+option(GLFW_BUILD_TESTS "" OFF)
+option(GLFW_BUILD_DOCS "" OFF)
+option(GLFW_INSTALL "" OFF)
 load_submodule(spdlog)
 load_submodule(fmt)
+load_submodule(glfw)
+load_submodule(glm)

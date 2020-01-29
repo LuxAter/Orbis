@@ -23,7 +23,7 @@ if(NOT ORBIS_SHARED_LIB)
   set_target_properties(
     orbis_static
     PROPERTIES CXX_STANDARD 11 CXX_STANDARD_REQUIRED YES CXX_EXTENSIONS OFF)
-  target_link_libraries(orbis_static PUBLIC spdlog fmt::fmt)
+  target_link_libraries(orbis_static PUBLIC spdlog fmt::fmt glm::glm ${CMAKE_DL_LIBS})
   install(TARGETS orbis_static ARCHIVE DESTINATION lib)
 endif()
 
@@ -39,7 +39,7 @@ if(ORBIS_SHARED_LIB)
   set_target_properties(
     orbis_shared
     PROPERTIES CXX_STANDARD 11 CXX_STANDARD_REQUIRED YES CXX_EXTENSIONS OFF)
-  target_link_libraries(orbis_shared PUBLIC spdlog fmt::fmt)
+  target_link_libraries(orbis_shared PUBLIC spdlog fmt::fmt glm::glm ${CMAKE_DL_LIBS})
   install(TARGETS orbis_shared LIBRARY DESTINATION lib)
 endif()
 

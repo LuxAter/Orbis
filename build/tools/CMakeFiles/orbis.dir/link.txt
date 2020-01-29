@@ -1,1 +1,0 @@
-/sbin/c++   -Wall -g -D__DEBUG__   CMakeFiles/orbis.dir/main.cpp.o  -o ../orbis  -Wl,-rpath,/home/arden/Programming/orbis/build:/home/arden/Programming/orbis/build/external/spdlog: ../liborbis_shared.so ../external/spdlog/libspdlogd.so.1.5.0 -lpthread ../external/fmt/libfmtd.a 

@@ -68,7 +68,7 @@ add_subdirectory(external)
 set(ORBIS_COMPILERS MSVC GNU Clang Intel AppleClang)
 write_compiler_detection_header(
   FILE
-  ${ORBIS_SOURCE_DIR}/include/orbis/compilers.hpp
+  ${ORBIS_SOURCE_DIR}/include/compilers.hpp
   PREFIX
   ORBIS
   COMPILERS

@@ -1,1 +1,0 @@
-/sbin/c++ -fPIC  -Wall -g -D__DEBUG__  -shared -Wl,-soname,liborbis_shared.so -o ../liborbis_shared.so CMakeFiles/orbis_shared.dir/log.cpp.o  -Wl,-rpath,/home/arden/Programming/orbis/build/external/spdlog: ../external/spdlog/libspdlogd.so.1.5.0 ../external/fmt/libfmtd.a -lpthread 
