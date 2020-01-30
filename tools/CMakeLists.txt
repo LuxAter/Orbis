@@ -5,6 +5,13 @@ set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${ORBIS_BINARY_DIR})
 # ##############################################################################
 # SOURCE FILES
 # ##############################################################################
+file(GLOB FONT_FILES ${ORBIS_SOURCE_DIR}/resources/*.ttf)
+add_custom_command(
+  OUTPUT ${ORBIS_SOURCE_DIR}/tools/fonts.hpp
+  COMMAND ${ORBIS_SOURCE_DIR}/resources/compile_resource.sh
+          ${ORBIS_SOURCE_DIR}/tools/fonts.hpp ${ORBIS_SOURCE_DIR}/resources ttf
+  DEPENDS ${FONT_FILES}
+  COMMENT "Compiling fonts")
 set(SOURCES
     main.cpp
     gl.cpp
@@ -15,7 +22,9 @@ set(SOURCES
     ${ORBIS_SOURCE_DIR}/external/imgui/imgui_draw.cpp
     ${ORBIS_SOURCE_DIR}/external/imgui/imgui.cpp
     ${ORBIS_SOURCE_DIR}/external/imgui/examples/imgui_impl_glfw.cpp
-    ${ORBIS_SOURCE_DIR}/external/imgui/examples/imgui_impl_opengl3.cpp)
+    ${ORBIS_SOURCE_DIR}/external/imgui/examples/imgui_impl_opengl3.cpp
+    ${ORBIS_SOURCE_DIR}/external/ImGuiColorTextEdit/TextEditor.cpp
+    ${ORBIS_SOURCE_DIR}/tools/fonts.hpp)
 
 # ##############################################################################
 # TARGET
@@ -25,8 +34,8 @@ target_include_directories(orbis PUBLIC ${ORBIS_SOURCE_DIR}/tools)
 target_include_directories(orbis PUBLIC ${ORBIS_SOURCE_DIR}/external/imgui)
 target_include_directories(orbis
                            PUBLIC ${ORBIS_SOURCE_DIR}/external/imgui/examples)
-target_include_directories(orbis
-                           PUBLIC ${ORBIS_SOURCE_DIR}/external/zep/include)
+target_include_directories(
+  orbis PUBLIC ${ORBIS_SOURCE_DIR}/external/ImGuiColorTextEdit)
 target_compile_definitions(orbis PUBLIC -DIMGUI_IMPL_OPENGL_LOADER_GLAD)
 
 set_target_properties(

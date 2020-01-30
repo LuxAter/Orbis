@@ -4,13 +4,23 @@
 #include <string>
 #include <unordered_map>
 
+#include <imgui.h>
+#include <imgui_impl_glfw.h>
+#include <imgui_impl_opengl3.h>
+
+#include <TextEditor.h>
+
+#include "gl.hpp"
+#include "fonts.hpp"
+
 namespace gui {
 std::unordered_map<std::string, std::unordered_map<std::string, Variable>>
     variables;
 std::unordered_map<std::string, Window> windows;
 } // namespace gui
 
-static bool profiler_window = false;
+static TextEditor editor;
+static std::string current_file;
 
 bool gui::init() {
   IMGUI_CHECKVERSION();
@@ -18,10 +28,22 @@ bool gui::init() {
   ImGuiIO &io = ImGui::GetIO();
   io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;
   io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;
+
+  void* font_data = std::malloc(FiraCode_Regular_ttf_size);
+  memcpy(font_data, FiraCode_Regular_ttf, FiraCode_Regular_ttf_size);
+  io.Fonts->AddFontFromMemoryTTF(font_data, FiraCode_Regular_ttf_size, 20.0f);
+
   ImGui_ImplGlfw_InitForOpenGL(gl::window, true);
   ImGui_ImplOpenGL3_Init("#version 410");
 
-  windows["Variables"] = Window{true, render_settings_window};
+  windows["Variables"] = Window{true, 0, render_settings_window};
+  windows["Editor"] =
+      Window{true, ImGuiWindowFlags_MenuBar, render_editor_window};
+
+  std::string current_file = "test.cpp";
+  auto lang = TextEditor::LanguageDefinition::CPlusPlus();
+  editor.SetLanguageDefinition(lang);
+  editor.SetText("");
 
   return true;
 }
@@ -59,7 +81,7 @@ void gui::frame() {
     ImGui::MenuItem("File", NULL, false, false);
     if (ImGui::BeginMenu("Windows")) {
       ImGui::MenuItem("Variables", NULL, &windows["Variables"].display_state);
-      ImGui::MenuItem("Profiler", NULL, &profiler_window);
+      ImGui::MenuItem("Editor", NULL, &windows["Editor"].display_state);
       ImGui::EndMenu();
     }
     ImGui::EndMenuBar();
@@ -71,6 +93,59 @@ void gui::frame() {
 
   ImGui::Render();
   ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+}
+
+void gui::render_editor_window(const std::string &name) {
+  if (ImGui::BeginMenuBar()) {
+    if (ImGui::BeginMenu("File")) {
+      if (ImGui::MenuItem("Save")) {
+        // Save text here
+      }
+      if (ImGui::MenuItem("Quit", "Alt-F4")) {
+      }
+      ImGui::EndMenu();
+    }
+    if (ImGui::BeginMenu("Edit")) {
+      bool ro = editor.IsReadOnly();
+      if (ImGui::MenuItem("Read-only mode", nullptr, &ro)) {
+        editor.SetReadOnly(ro);
+      }
+      ImGui::Separator();
+      if (ImGui::MenuItem("Copy", "Ctrl-C", nullptr, editor.HasSelection()))
+        editor.Copy();
+      if (ImGui::MenuItem("Cut", "Ctrl-X", nullptr,
+                          !ro && editor.HasSelection()))
+        editor.Cut();
+      if (ImGui::MenuItem("Delete", "Del", nullptr,
+                          !ro && editor.HasSelection()))
+        editor.Delete();
+      if (ImGui::MenuItem("Paste", "Ctrl-V", nullptr,
+                          !ro && ImGui::GetClipboardText() != nullptr))
+        editor.Paste();
+      ImGui::Separator();
+      if (ImGui::MenuItem("Select all", nullptr, nullptr))
+        editor.SetSelection(TextEditor::Coordinates(),
+                            TextEditor::Coordinates(editor.GetTotalLines(), 0));
+      ImGui::EndMenu();
+    }
+    if (ImGui::BeginMenu("View")) {
+      if (ImGui::MenuItem("Dark palette"))
+        editor.SetPalette(TextEditor::GetDarkPalette());
+      if (ImGui::MenuItem("Light palette"))
+        editor.SetPalette(TextEditor::GetLightPalette());
+      if (ImGui::MenuItem("Retro blue palette"))
+        editor.SetPalette(TextEditor::GetRetroBluePalette());
+      ImGui::EndMenu();
+    }
+    ImGui::EndMenuBar();
+  }
+  auto cpos = editor.GetCursorPosition();
+  ImGui::Text(
+      "%6d/%-6d %6d lines  | %s | %s | %s | %s", cpos.mLine + 1,
+      cpos.mColumn + 1, editor.GetTotalLines(),
+      editor.IsOverwrite() ? "Ovr" : "Ins", editor.CanUndo() ? "*" : " ",
+      editor.GetLanguageDefinition().mName.c_str(), current_file.c_str());
+  editor.Render("TextEditor");
 }
 
 void gui::render_settings_window(const std::string &name) {
@@ -124,7 +199,8 @@ void gui::render_windows() {
   for (auto &window : windows) {
     if (window.second.render_callback != nullptr) {
       if (window.second.display_state) {
-        ImGui::Begin(window.first.c_str(), &window.second.display_state);
+        ImGui::Begin(window.first.c_str(), &window.second.display_state,
+                     window.second.window_flags);
         window.second.render_callback(window.first);
         ImGui::End();
       }

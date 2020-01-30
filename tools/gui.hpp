@@ -9,7 +9,6 @@
 #include <imgui.h>
 #include <imgui_impl_glfw.h>
 #include <imgui_impl_opengl3.h>
-#include <memory>
 
 #include "gl.hpp"
 
@@ -23,6 +22,7 @@ struct Variable {
 
 struct Window {
   bool display_state;
+  uint32_t window_flags;
   void (*render_callback)(const std::string &);
 };
 extern std::unordered_map<std::string,
@@ -30,15 +30,16 @@ extern std::unordered_map<std::string,
     variables;
 extern std::unordered_map<std::string, Window> windows;
 
-inline void create_window(const std::string name,
-                          void (*callback)(const std::string &)) {
-  windows[name] = Window{true, callback};
+inline void create_window(const std::string name, const uint32_t flags,
+                          void (*callback)(const std::string &) = nullptr) {
+  windows[name] = Window{true, flags, callback};
 }
 
 bool init();
 void terminate();
 void frame();
 
+void render_editor_window(const std::string &name);
 void render_settings_window(const std::string &name);
 void render_windows();
 
