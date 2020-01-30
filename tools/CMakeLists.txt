@@ -25,9 +25,11 @@ target_include_directories(orbis PUBLIC ${ORBIS_SOURCE_DIR}/tools)
 target_include_directories(orbis PUBLIC ${ORBIS_SOURCE_DIR}/external/imgui)
 target_include_directories(orbis
                            PUBLIC ${ORBIS_SOURCE_DIR}/external/imgui/examples)
+target_include_directories(orbis
+                           PUBLIC ${ORBIS_SOURCE_DIR}/external/zep/include)
 target_compile_definitions(orbis PUBLIC -DIMGUI_IMPL_OPENGL_LOADER_GLAD)
 
 set_target_properties(
-  orbis PROPERTIES CXX_STANDARD 14 CXX_STANDARD_REQUIRED YES CXX_EXTENSIONS OFF)
+  orbis PROPERTIES CXX_STANDARD 17 CXX_STANDARD_REQUIRED YES CXX_EXTENSIONS OFF)
 target_link_libraries(orbis orbis::orbis glfw)
 install(TARGETS orbis RUNTIME DESTINATION bin)

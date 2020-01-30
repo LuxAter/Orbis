@@ -14,19 +14,19 @@
 #include "gl.hpp"
 
 namespace gui {
-enum DisplayMode { DM_INPUT, DM_DRAG, DM_SLIDER, DM_COLOR };
-template <typename T, typename U = T> struct Variable {
-  DisplayMode disp;
-  T *val;
-  U *v_min, *v_max;
-  void (*callback)(T *);
+struct Variable {
+  enum VariableType { VAR_FLOAT, VAR_INT, VAR_VEC3, VAR_COLOR };
+  VariableType type;
+  void *val;
+  void *callback;
 };
 
 struct Window {
   bool display_state;
   void (*render_callback)(const std::string &);
 };
-extern std::unordered_map<std::string, std::unordered_map<std::string, void *>>
+extern std::unordered_map<std::string,
+                          std::unordered_map<std::string, Variable>>
     variables;
 extern std::unordered_map<std::string, Window> windows;
 
@@ -42,53 +42,53 @@ void frame();
 void render_settings_window(const std::string &name);
 void render_windows();
 
-template <typename T> void display(const std::string &name, Variable<T> *var) {}
-template <> void display<int>(const std::string &name, Variable<int> *var) {
-  switch (var->disp) {
-  case DM_INPUT:
-    if (ImGui::InputInt(name.c_str(), var->val) && var->callback != nullptr)
-      var->callback(var->val);
-    break;
-  case DM_DRAG:
-    if (ImGui::DragInt(name.c_str(), var->val) && var->callback != nullptr)
-      var->callback(var->val);
-    break;
-  case DM_SLIDER:
-    if (ImGui::SliderInt(name.c_str(), var->val, *(var->v_min),
-                         *(var->v_max)) &&
-        var->callback != nullptr)
-      var->callback(var->val);
-    break;
-  case DM_COLOR:
-  default:
-    ImGui::Text("%s: %d", name.c_str(), *(var->val));
-  }
+inline void addVar(const std::string &name, float *var,
+                   void (*callback)(float *) = nullptr) {
+  variables["Global"][name] =
+      Variable{Variable::VAR_FLOAT, reinterpret_cast<void *>(var),
+               reinterpret_cast<void *>(callback)};
 }
-template <> void display<float>(const std::string &name, Variable<float> *var) {
-  switch (var->disp) {
-  case DM_INPUT:
-    if (ImGui::InputFloat(name.c_str(), var->val) && var->callback != nullptr)
-      var->callback(var->val);
-    break;
-  case DM_DRAG:
-    if (ImGui::DragFloat(name.c_str(), var->val) && var->callback != nullptr)
-      var->callback(var->val);
-    break;
-  case DM_SLIDER:
-    if (ImGui::SliderFloat(name.c_str(), var->val, *(var->v_min),
-                           *(var->v_max)) &&
-        var->callback != nullptr)
-      var->callback(var->val);
-    break;
-  case DM_COLOR:
-  default:
-    ImGui::Text("%s: %f", name.c_str(), *(var->val));
-  }
+inline void addVar(const std::string &name, int *var,
+                   void (*callback)(int *) = nullptr) {
+  variables["Global"][name] =
+      Variable{Variable::VAR_INT, reinterpret_cast<void *>(var),
+               reinterpret_cast<void *>(callback)};
 }
-
-template <typename T, typename U>
-void addVar(const std::string &name, const Variable<T, U> &var) {
-  variables["Global"][name] = reinterpret_cast<void *>(&var);
+inline void addVar(const std::string &name, glm::vec3 *var,
+                   void (*callback)(glm::vec3 *) = nullptr) {
+  variables["Global"][name] =
+      Variable{Variable::VAR_VEC3, reinterpret_cast<void *>(var),
+               reinterpret_cast<void *>(callback)};
+}
+inline void addVar(const std::string &name, glm::vec4 *var,
+                   void (*callback)(glm::vec4 *) = nullptr) {
+  variables["Global"][name] =
+      Variable{Variable::VAR_COLOR, reinterpret_cast<void *>(var),
+               reinterpret_cast<void *>(callback)};
+}
+inline void addVar(const std::string &group, const std::string &name,
+                   float *var, void (*callback)(float *) = nullptr) {
+  variables[group][name] =
+      Variable{Variable::VAR_FLOAT, reinterpret_cast<void *>(var),
+               reinterpret_cast<void *>(callback)};
+}
+inline void addVar(const std::string &group, const std::string &name, int *var,
+                   void (*callback)(int *) = nullptr) {
+  variables[group][name] =
+      Variable{Variable::VAR_INT, reinterpret_cast<void *>(var),
+               reinterpret_cast<void *>(callback)};
+}
+inline void addVar(const std::string &group, const std::string &name,
+                   glm::vec3 *var, void (*callback)(glm::vec3 *) = nullptr) {
+  variables[group][name] =
+      Variable{Variable::VAR_VEC3, reinterpret_cast<void *>(var),
+               reinterpret_cast<void *>(callback)};
+}
+inline void addVar(const std::string &group, const std::string &name,
+                   glm::vec4 *var, void (*callback)(glm::vec4 *) = nullptr) {
+  variables[group][name] =
+      Variable{Variable::VAR_COLOR, reinterpret_cast<void *>(var),
+               reinterpret_cast<void *>(callback)};
 }
 
 } // namespace gui

@@ -21,17 +21,16 @@ int main(int argc, char const *argv[]) {
     }
   }
   gui::init();
-  float v1;
-  float v1min = -100, v1max = 100;
-  gui::addVar("Float Input", gui::Variable<float>{gui::DM_INPUT, &v1});
-  // gui::addFloatInput("Float input", &v1, [](float *v) { LINFO("V1: {}",
-  // *v); }); gui::addFloatDrag("Float drag", &v1, [](float *v) { LINFO("V1:
-  // {}", *v); }); gui::addFloatSlider("Float slide", &v1, &v1min, &v1max,
-  //                     [](float *v) { LINFO("V1: {}", *v); });
-  // gui::addFloatDrag("V1 min", &v1min);
-  // gui::addVar("Test", &f, [](void *f) { LINFO("F: {}", *((float *)f));
-  // }); gui::addVar("glClearColor", &clear_color,
-  //             [](void *c) { gl::clearColor(*(vec3 *)(c)); });
+  float v1 = 0.0f;
+  int v2 = 0;
+  glm::vec3 v3(0);
+  glm::vec4 clear_color(0);
+  gui::addVar("V1", &v1, [](float *v) { LINFO("V1: {}", *v); });
+  gui::addVar("V2", &v2);
+  gui::addVar("V3", &v3);
+  gui::addVar("clearColor", &clear_color,
+              [](glm::vec4 *color) { gl::clearColor(*color); });
+  gui::addVar("Scene", "background", &clear_color);
   while (!gl::shouldClose()) {
     gl::frame();
     gui::frame();
