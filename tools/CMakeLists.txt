@@ -28,6 +28,6 @@ target_include_directories(orbis
 target_compile_definitions(orbis PUBLIC -DIMGUI_IMPL_OPENGL_LOADER_GLAD)
 
 set_target_properties(
-  orbis PROPERTIES CXX_STANDARD 11 CXX_STANDARD_REQUIRED YES CXX_EXTENSIONS OFF)
+  orbis PROPERTIES CXX_STANDARD 14 CXX_STANDARD_REQUIRED YES CXX_EXTENSIONS OFF)
 target_link_libraries(orbis orbis::orbis glfw)
 install(TARGETS orbis RUNTIME DESTINATION bin)

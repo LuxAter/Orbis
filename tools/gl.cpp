@@ -55,8 +55,8 @@ void gl::setShouldClose(bool setting) {
   glfwSetWindowShouldClose(window, setting ? GLFW_TRUE : GLFW_FALSE);
 }
 void gl::frame() {
-  glfwSwapBuffers(window);
   glfwPollEvents();
+  glfwSwapBuffers(window);
   clear();
   fps_counter++;
   if (fps_counter % 10 == 0) {
@@ -90,8 +90,4 @@ void gl::clear() { glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); }
 void gl::clear(const glm::vec3 &c) {
   glClearColor(c.r, c.g, c.b, 0.0f);
   clear();
-}
-
-void gl::drawPixels(const orbis::Image &img) {
-  glDrawPixels(img.width, img.height, GL_RGB, GL_FLOAT, img.get_float_ptr());
 }
