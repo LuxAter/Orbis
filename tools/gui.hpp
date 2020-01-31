@@ -34,6 +34,7 @@ inline void create_window(const std::string name, const uint32_t flags,
                           void (*callback)(const std::string &) = nullptr) {
   windows[name] = Window{true, flags, callback};
 }
+void open_editor(const std::string file);
 
 bool init();
 void terminate();

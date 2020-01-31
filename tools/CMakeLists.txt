@@ -24,6 +24,7 @@ set(SOURCES
     ${ORBIS_SOURCE_DIR}/external/imgui/examples/imgui_impl_glfw.cpp
     ${ORBIS_SOURCE_DIR}/external/imgui/examples/imgui_impl_opengl3.cpp
     ${ORBIS_SOURCE_DIR}/external/ImGuiColorTextEdit/TextEditor.cpp
+    ${ORBIS_SOURCE_DIR}/external/ImGuiFileDialog/ImGuiFileDialog.cpp
     ${ORBIS_SOURCE_DIR}/tools/fonts.hpp)
 
 # ##############################################################################
@@ -36,7 +37,10 @@ target_include_directories(orbis
                            PUBLIC ${ORBIS_SOURCE_DIR}/external/imgui/examples)
 target_include_directories(
   orbis PUBLIC ${ORBIS_SOURCE_DIR}/external/ImGuiColorTextEdit)
+target_include_directories(
+  orbis PUBLIC ${ORBIS_SOURCE_DIR}/external/ImGuiFileDialog)
 target_compile_definitions(orbis PUBLIC -DIMGUI_IMPL_OPENGL_LOADER_GLAD)
+target_compile_definitions(orbis PUBLIC -DLINUX -DUNIX)
 
 set_target_properties(
   orbis PROPERTIES CXX_STANDARD 17 CXX_STANDARD_REQUIRED YES CXX_EXTENSIONS OFF)
